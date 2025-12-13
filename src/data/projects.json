@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "API RESTful de E-commerce",
+    "description": "Backend escalable construido con Node.js y Express. Maneja autenticación JWT, pagos con Stripe y gestión de inventario en tiempo real.",
+    "tags": ["Node.js", "Express", "MongoDB", "Redis", "Docker"],
+    "githubUrl": "https://github.com/usuario/ecommerce-api",
+    "demoUrl": null
+  },
+  {
+    "id": 2,
+    "title": "Microservicio de Autenticación",
+    "description": "Sistema de autenticación centralizado usando OAuth2 y OpenID Connect. Implementado en Go para alta concurrencia.",
+    "tags": ["Go", "gRPC", "PostgreSQL", "OAuth2"],
+    "githubUrl": "https://github.com/usuario/auth-service",
+    "demoUrl": "https://auth.ejemplo.com"
+  },
+  {
+    "id": 3,
+    "title": "Pipeline de Procesamiento de Datos",
+    "description": "Pipeline ETL para procesar grandes volúmenes de logs. Utiliza Apache Kafka para streaming y guarda en Data Warehouse.",
+    "tags": ["Python", "Apache Kafka", "AWS Lambda", "S3"],
+    "githubUrl": "https://github.com/usuario/data-pipeline",
+    "demoUrl": null
+  }
+]
