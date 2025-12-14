@@ -31,7 +31,7 @@ export default function Project(project: ProjectProps) {
                     rel="noopener noreferrer"
                     style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--foreground)" }}
                 >
-                    Código →
+                    Code →
                 </a>
                 {project.demoUrl && (
                     <a
@@ -40,7 +40,7 @@ export default function Project(project: ProjectProps) {
                         rel="noopener noreferrer"
                         style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--accent-primary)" }}
                     >
-                        Demo en vivo →
+                        Live Demo →
                     </a>
                 )}
             </div>
