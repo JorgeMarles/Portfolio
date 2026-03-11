@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Jorge Marles | Systems Engineer",
-  description: "Professional portfolio showing backend projects, system architecture, and full stack solutions.",
-  keywords: ["Backend Developer", "Full Stack", "Portfolio", "Node.js", "Go", "Software Architecture"],
+  title: "Jorge Marles | Software Engineer",
+  description: "Portfolio showing backend projects, system architecture, and full stack solutions.",
+  keywords: ["Backend Developer", "Full Stack", "Portfolio", "Node.js", "Go", "Spring", "Python", "Typescript", "Software Architecture"],
 };
 
 export default function RootLayout({

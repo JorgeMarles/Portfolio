@@ -27,7 +27,7 @@ export default function Home() {
               Hi, I'm <span className="text-gradient">Jorge Marles</span>
             </h1>
             <p style={{ fontSize: "1.25rem", color: "#a1a1aa", maxWidth: "600px", marginBottom: "2rem" }}>
-              Full Stack Developer | Backend Focused | In-Formation Systems Engineer. Passionate about System Architecture and Cloud Computing. Turning complex problems into efficient, maintainable code.
+              Full Stack Developer | In-Formation Software Engineer. Passionate about System Architecture and Cloud Computing. Turning complex problems into efficient, maintainable code.
             </p>
             <div style={{ display: "flex", gap: "1rem" }}>
               <a href="#projects" className="btn">See Projects</a>
