@@ -16,10 +16,7 @@ export default function Navbar() {
                 alignItems: 'center',
                 justifyContent: 'space-between'
             }}>
-                <Link href="/" style={{ fontWeight: 700, fontSize: '1.25rem' }}>
-                    JM<span style={{ color: 'var(--accent-primary)' }}>.</span>
-                </Link>
-
+                <div></div>
                 <div style={{ display: 'flex', gap: '2rem' }}>
                     <Link href="/projects" className="nav-link">Projects</Link>
                     <Link href="/about" className="nav-link">About</Link>
