@@ -1,12 +1,14 @@
 import ProjectCard from "../components/project";
-import projectsData from "@/data/projects.json";
+import { ProjectService } from "@/services/project.service";
 
 export const metadata = {
     title: "Projects | Jorge Marles",
     description: "Complete catalog of backend projects, APIs, and distributed systems.",
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+    const projects = await ProjectService.getAllProjects();
+
     return (
         <main className="container" style={{ padding: "4rem 1.5rem" }}>
             <h1 style={{ marginBottom: "1rem" }}>My Projects</h1>
@@ -15,7 +17,7 @@ export default function ProjectsPage() {
             </p>
 
             <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
-                {projectsData.map((project) => (
+                {projects.map((project) => (
                     <ProjectCard key={project.id} {...project} />
                 ))}
             </div>

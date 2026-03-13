@@ -1,19 +1,9 @@
 import Image from "next/image";
-import projectsData from "@/data/projects.json";
 import ProjectCard from "./components/project";
-import Project from "./components/project";
+import { ProjectService } from "@/services/project.service";
 
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  tags: string[];
-  githubUrl: string;
-  demoUrl: string | null;
-}
-
-export default function Home() {
-  const projects: Project[] = projectsData;
+export default async function Home() {
+  const projects = await ProjectService.getFeaturedProjects();
 
   return (
     <div className="min-h-screen">
@@ -53,7 +43,7 @@ export default function Home() {
           <h2 style={{ fontSize: "2rem", marginBottom: "2rem" }}>Featured Projects</h2>
 
           <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
-            {projects.slice(0, 3).map((project) => (
+            {projects.map((project) => (
               <ProjectCard key={project.id} {...project} />
             ))}
           </div>

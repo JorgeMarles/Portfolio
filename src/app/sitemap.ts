@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next'
-import projectsData from '@/data/projects.json'
+import { ProjectService } from '@/services/project.service'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    const projectsData = await ProjectService.getAllProjects();
     const baseUrl = 'https://www.tudominio.com' // TODO: Actualizar al desplegar
 
     // Rutas estáticas de alto nivel
