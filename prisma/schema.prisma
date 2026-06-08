@@ -111,3 +111,18 @@ enum ResourceType {
   VIDEO         // Enlace a video (YouTube, Loom…)
   REPOSITORY    // Enlace a repositorio de código
 }
+
+// ─────────────────────────────────────────────
+//  CV Version
+//  Multiple CV versions with YAML content
+// ─────────────────────────────────────────────
+model CvVersion {
+  id        Int      @id @default(autoincrement())
+  name      String
+  content   String   @db.Text
+  isPublic  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isPublic])
+}

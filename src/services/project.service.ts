@@ -1,34 +1,38 @@
 import { ProjectRepository, ProjectWithRelations } from "@/repositories/project.repo";
 
-const projectRepo = new ProjectRepository();
+export class ProjectService {
+  private projectRepo: ProjectRepository;
 
-export const ProjectService = {
+  constructor() {
+    this.projectRepo = new ProjectRepository();
+  }
+
   /**
    * Obtener proyectos para la lista general
    */
   async getAllProjects(): Promise<ProjectWithRelations[]> {
-    return projectRepo.findAll();
-  },
+    return this.projectRepo.findAll();
+  }
 
   /**
    * Obtener proyectos destacados para la home
    */
   async getFeaturedProjects(): Promise<ProjectWithRelations[]> {
-    return projectRepo.findFeatured();
-  },
+    return this.projectRepo.findFeatured();
+  }
 
   /**
    * Obtener el detalle de un proyecto por su slug
    * Aquí se podría agregar lógica de transformación si fuera necesario
    */
   async getProjectBySlug(slug: string): Promise<ProjectWithRelations | null> {
-    return projectRepo.findBySlug(slug);
-  },
+    return this.projectRepo.findBySlug(slug);
+  }
 
   /**
    * Filtrar proyectos por tag
    */
-  async getProjectsByTag(tagSlug: string) {
-    // Lógica adicional de filtrado si fuera necesaria
+  async getProjectsByTag(tagSlug: string): Promise<ProjectWithRelations[]> {
+    return this.projectRepo.findByTagSlug(tagSlug);
   }
-};
+}

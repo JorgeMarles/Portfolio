@@ -3,25 +3,39 @@ import ProjectCard from "./components/project";
 import { ProjectService } from "@/services/project.service";
 
 export default async function Home() {
-  const projects = await ProjectService.getFeaturedProjects();
+  const projectService = new ProjectService();
+  const projects = await projectService.getFeaturedProjects();
 
   return (
     <div className="min-h-screen">
       <div className="bg-grid" />
+      <div className="grain" />
 
       <main className="container">
-        {/* Hero Section */}
         <section className="hero">
           <div className="hero-content">
-            <h1 className="title">
+            <h1>
               Hi, I'm <span className="text-gradient">Jorge Marles</span>
             </h1>
-            <p style={{ fontSize: "1.25rem", color: "#a1a1aa", maxWidth: "600px", marginBottom: "2rem" }}>
-              Full Stack Developer | In-Formation Software Engineer. Passionate about System Architecture and Cloud Computing. Turning complex problems into efficient, maintainable code.
+            <p style={{
+              fontSize: "1.25rem",
+              color: "#999",
+              marginBottom: "2.5rem",
+              fontWeight: 500,
+              lineHeight: 1.7
+            }}>
+              Full stack developer and software engineer in training. Focused on system architecture and cloud computing. Building efficient, maintainable solutions for complex problems.
             </p>
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <a href="#projects" className="btn">See Projects</a>
-              <a href="https://github.com/JorgeMarles" target="_blank" rel="noopener noreferrer" className="btn btn-outline">GitHub</a>
+            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
+              <a href="#projects" className="btn">View Projects</a>
+              <a
+                href="https://github.com/JorgeMarles"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline"
+              >
+                GitHub
+              </a>
             </div>
           </div>
 
@@ -38,11 +52,33 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* Projects Section */}
-        <section id="projects" style={{ padding: "4rem 0" }}>
-          <h2 style={{ fontSize: "2rem", marginBottom: "2rem" }}>Featured Projects</h2>
+        <section id="projects" style={{ padding: "3rem 0 4rem" }}>
+          <h2 style={{
+            marginBottom: "2rem",
+            fontWeight: 800,
+            textTransform: "uppercase",
+            letterSpacing: "-0.02em"
+          }}>
+            <span style={{
+              fontFamily: "var(--mono)",
+              fontSize: "0.75rem",
+              color: "var(--accent)",
+              display: "block",
+              marginBottom: "0.5rem",
+              letterSpacing: "0.1em"
+            }}>
+              [ FEATURED PROJECTS ]
+            </span>
+            Selected Work
+          </h2>
 
-          <div className="grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
+          <div
+            className="grid"
+            style={{
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))",
+              gap: "1.5rem"
+            }}
+          >
             {projects.map((project) => (
               <ProjectCard key={project.id} {...project} />
             ))}
@@ -50,8 +86,21 @@ export default async function Home() {
         </section>
       </main>
 
-      <footer style={{ borderTop: "1px solid var(--card-border)", padding: "2rem 0", marginTop: "4rem", textAlign: "center", color: "#666" }}>
-        <p>© {new Date().getFullYear()} Jorge Marles. Built with Next.js</p>
+      <footer style={{
+        borderTop: "2px solid var(--accent)",
+        padding: "2rem 0",
+        marginTop: "3rem"
+      }}>
+        <div className="container" style={{
+          textAlign: "center",
+          fontFamily: "var(--mono)",
+          fontSize: "0.75rem",
+          textTransform: "uppercase",
+          letterSpacing: "0.05em",
+          color: "#666"
+        }}>
+          <p>© {new Date().getFullYear()} JORGE MARLES // BUILT WITH NEXT.JS</p>
+        </div>
       </footer>
     </div>
   );

@@ -1,0 +1,325 @@
+/* Admin Panel Button Standardization */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 0;
+  border: 2px solid;
+  transition: all 100ms ease;
+  cursor: pointer;
+  white-space: nowrap;
+  min-height: 44px;
+}
+
+.admin-btn-primary {
+  background: var(--foreground);
+  border-color: var(--foreground);
+  color: var(--background);
+}
+
+.admin-btn-primary:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--foreground);
+}
+
+.admin-btn-secondary {
+  background: transparent;
+  border-color: var(--card-border);
+  color: var(--foreground);
+}
+
+.admin-btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.admin-btn-danger {
+  background: transparent;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.admin-btn-danger:hover {
+  background: #ef4444;
+  color: #18181b;
+}
+
+.admin-btn-success {
+  background: transparent;
+  border-color: #22c55e;
+  color: #22c55e;
+}
+
+.admin-btn-success:hover {
+  background: #22c55e;
+  color: #18181b;
+}
+
+/* Admin Form Inputs - Industrial Brutalist System */
+.admin-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  background: #0A0A0A;
+  border: 2px solid #1A1A1A;
+  border-radius: 0;
+  color: #EAEAEA;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: none;
+  min-height: 48px;
+  box-shadow: inset 0 0 0 1px rgba(234, 234, 234, 0.05);
+}
+
+.admin-input:focus {
+  outline: none;
+  border-color: #E61919;
+  background: #121212;
+  box-shadow: inset 0 0 0 1px #E61919;
+}
+
+.admin-input:hover:not(:focus) {
+  border-color: #252525;
+}
+
+.admin-input::placeholder {
+  color: #4A4A4A;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--font-mono);
+}
+
+.admin-textarea {
+  min-height: 140px;
+  resize: vertical;
+  text-transform: none;
+  line-height: 1.6;
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+}
+
+.admin-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='10' viewBox='0 0 16 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M2 2L8 8L14 2' stroke='%23EAEAEA' stroke-width='2' stroke-linecap='square' stroke-linejoin='miter'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 3.5rem;
+  cursor: pointer;
+}
+
+/* Input Label System */
+.admin-label {
+  display: block;
+  margin-bottom: 0.625rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8A8A8A;
+}
+
+.admin-label::before {
+  content: "[ ";
+  color: #4A4A4A;
+}
+
+.admin-label::after {
+  content: " ]";
+  color: #4A4A4A;
+}
+
+/* Checkbox Industrial Styling */
+.admin-checkbox {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid #1A1A1A;
+  border-radius: 0;
+  background: #0A0A0A;
+  cursor: pointer;
+  position: relative;
+  transition: none;
+}
+
+.admin-checkbox:checked {
+  background: #E61919;
+  border-color: #E61919;
+}
+
+.admin-checkbox:checked::after {
+  content: "✕";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #0A0A0A;
+  font-size: 0.875rem;
+  font-weight: 900;
+  font-family: var(--font-mono);
+}
+
+.admin-checkbox:hover:not(:checked) {
+  border-color: #252525;
+}
+
+.admin-checkbox:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(230, 25, 25, 0.3);
+}
+
+/* URL and Technical Inputs */
+.admin-input[type="url"] {
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 0.75rem;
+}
+
+/* Field Grid Compartmentalization */
+.admin-field-grid {
+  display: grid;
+  gap: 2px;
+  background: #1A1A1A;
+  padding: 2px;
+  border: 2px solid #1A1A1A;
+}
+
+.admin-field-grid > div {
+  background: var(--background);
+  padding: 1.5rem;
+}
+
+/* Technical Framing Elements */
+.admin-section-divider {
+  height: 2px;
+  background: #1A1A1A;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.admin-section-divider::before {
+  content: "///";
+  position: absolute;
+  left: 0;
+  top: -0.625rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #4A4A4A;
+  background: var(--background);
+  padding: 0 0.5rem;
+}
+
+/* Error Message Industrial Styling */
+.admin-error {
+  padding: 1rem 1.5rem;
+  background: #0A0A0A;
+  border: 2px solid #E61919;
+  color: #EAEAEA;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+}
+
+.admin-error::before {
+  content: "[ ERROR ]";
+  display: block;
+  color: #E61919;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+}
+
+/* Loading State */
+.admin-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #4A4A4A;
+}
+
+.admin-loading::before {
+  content: ">>> ";
+  color: #E61919;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Form Section Headers */
+.admin-section-header {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8A8A8A;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #1A1A1A;
+}
+
+.admin-section-header::before {
+  content: "[ ";
+  color: #E61919;
+}
+
+.admin-section-header::after {
+  content: " ]";
+  color: #E61919;
+}
+
+/* Data Grid Display (for lists/tables) */
+.admin-data-grid {
+  display: grid;
+  gap: 1px;
+  background: #1A1A1A;
+  border: 2px solid #1A1A1A;
+}
+
+.admin-data-row {
+  background: #0A0A0A;
+  padding: 1rem 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  align-items: center;
+  transition: background 100ms;
+}
+
+.admin-data-row:hover {
+  background: #121212;
+}
+
+.admin-data-cell {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.admin-data-label {
+  font-size: 0.6875rem;
+  color: #4A4A4A;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.05em;
+}

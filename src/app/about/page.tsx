@@ -1,102 +1,137 @@
 import { Metadata } from "next";
+import { CvService } from "@/services/cv.service";
+import { parseCvYaml } from "@/lib/cv-parser";
+import { SkillTags } from "@/app/components/SkillTags";
 
 export const metadata: Metadata = {
     title: "About Me | Jorge Marles",
     description: "Professional background, education and technical skills of Jorge Marles.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+    const cvService = new CvService();
+    const publicVersion = await cvService.getPublicVersion();
+
+    const cv = publicVersion ? parseCvYaml(publicVersion.content) : null;
+
+    if (!cv) {
+        return (
+            <main className="container" style={{ padding: "6rem 2rem", maxWidth: "840px" }}>
+                <h1>About</h1>
+                <p style={{ color: "#999", marginTop: "1rem" }}>No public CV available yet.</p>
+            </main>
+        );
+    }
+
+    const timeline = [
+        ...cv.experience.map(exp => ({
+            year: exp.startDate.substring(0, 4),
+            title: exp.position,
+            org: exp.company,
+            desc: exp.highlights[0] || "",
+            type: "experience"
+        })),
+        ...cv.education.map(edu => ({
+            year: edu.startDate.substring(0, 4),
+            title: edu.degree,
+            org: edu.institution,
+            desc: edu.highlights[0] || `${edu.area}`,
+            type: "education"
+        }))
+    ].sort((a, b) => b.year.localeCompare(a.year));
+
     return (
-        <main className="container" style={{ padding: "4rem 1.5rem", maxWidth: "800px" }}>
-            <section style={{ marginBottom: "4rem" }}>
-                <h1>About Me</h1>
-                <p style={{ fontSize: "1.2rem", color: "#a1a1aa", marginBottom: "2rem" }}>
-                    Software Engineer passionate about scalability and performance.
-                    I specialize in designing robust backend systems capable of handling millions of requests.
-                    When I'm not coding in Go or Node.js, I'm learning about new cloud-native architectures.
+        <main className="container" style={{ padding: "4rem 2rem", maxWidth: "840px" }}>
+            <section style={{ marginBottom: "3rem" }}>
+                <h1>About</h1>
+                <p style={{
+                    fontSize: "1.125rem",
+                    color: "#999",
+                    marginBottom: "2.5rem",
+                    marginTop: "1rem",
+                    fontWeight: 500
+                }}>
+                    {cv.headline || "Software Engineer"}
                 </p>
 
-                <a
-                    href="/cv.pdf"
-                    download
-                    className="btn"
-                    style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
-                >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                        <polyline points="7 10 12 15 17 10" />
-                        <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    Download Resume (PDF)
-                </a>
+                {publicVersion && (
+                    <a
+                        href={`/api/cv/${publicVersion.id}/export`}
+                        download
+                        className="btn"
+                        style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "0.625rem"
+                        }}
+                    >
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Download CV
+                    </a>
+                )}
             </section>
 
-            <section style={{ marginBottom: "4rem" }}>
-                <h2 style={{ fontSize: "1.8rem", marginBottom: "1.5rem" }}>Milestones & Education</h2>
+            <section style={{ marginBottom: "3rem" }}>
+                <h2 style={{ marginBottom: "2rem" }}>Experience & education</h2>
 
                 <div className="timeline">
-                    {[
-                        {
-                            year: "2023",
-                            title: "Cloud Solutions Architect",
-                            org: "Tech Solutions Inc.",
-                            desc: "Led migration from monolith to microservices, reducing costs by 40%."
-                        },
-                        {
-                            year: "2021",
-                            title: "Senior Backend Developer",
-                            org: "StartupX",
-                            desc: "Implemented banking core using Go and gRPC."
-                        },
-                        {
-                            year: "2019",
-                            title: "Systems Engineering",
-                            org: "National University",
-                            desc: "Graduated with honors. Thesis on Distributed Systems."
-                        }
-                    ].map((item, i) => (
+                    {timeline.map((item, i) => (
                         <div key={i} style={{
-                            borderLeft: "2px solid var(--accent-primary)",
-                            paddingLeft: "1.5rem",
+                            borderLeft: "2px solid var(--accent)",
+                            paddingLeft: "2rem",
                             marginBottom: "2rem",
                             position: "relative"
                         }}>
                             <div style={{
                                 position: "absolute",
-                                left: "-6px",
+                                left: "-7px",
                                 top: "0",
-                                width: "10px",
-                                height: "10px",
+                                width: "12px",
+                                height: "12px",
                                 borderRadius: "50%",
-                                background: "var(--accent-primary)"
+                                background: "var(--accent)",
+                                boxShadow: "0 0 0 3px var(--background)"
                             }} />
-                            <span style={{ color: "var(--accent-primary)", fontWeight: "bold", fontSize: "0.9rem" }}>
+                            <span style={{
+                                color: "var(--accent)",
+                                fontWeight: 700,
+                                fontSize: "0.8125rem",
+                                letterSpacing: "0.05em",
+                                textTransform: "uppercase"
+                            }}>
                                 {item.year}
                             </span>
-                            <h3 style={{ fontSize: "1.2rem", margin: "0.2rem 0" }}>{item.title}</h3>
-                            <p style={{ color: "#888", fontSize: "0.9rem", marginBottom: "0.5rem" }}>{item.org}</p>
-                            <p style={{ color: "#a1a1aa" }}>{item.desc}</p>
+                            <h3 style={{
+                                fontSize: "1.125rem",
+                                margin: "0.375rem 0",
+                                fontWeight: 600
+                            }}>
+                                {item.title}
+                            </h3>
+                            <p style={{
+                                color: "#777",
+                                fontSize: "0.9375rem",
+                                marginBottom: "0.625rem",
+                                fontWeight: 500
+                            }}>
+                                {item.org}
+                            </p>
+                            <p style={{ color: "#999", lineHeight: 1.6 }}>{item.desc}</p>
                         </div>
                     ))}
                 </div>
             </section>
 
-            <section>
-                <h2 style={{ fontSize: "1.8rem", marginBottom: "1.5rem" }}>Tech Stack</h2>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
-                    {["Go (Golang)", "Node.js", "Python", "Docker", "Kubernetes", "AWS", "PostgreSQL", "Redis", "Kafka", "Terrorform"].map(skill => (
-                        <span key={skill} style={{
-                            background: "rgba(255,255,255,0.05)",
-                            padding: "0.5rem 1rem",
-                            borderRadius: "8px",
-                            border: "1px solid var(--card-border)",
-                            color: "#ededed"
-                        }}>
-                            {skill}
-                        </span>
-                    ))}
-                </div>
-            </section>
+            {cv.skills.length > 0 && (
+                <section>
+                    <h2 style={{ marginBottom: "2rem" }}>Tech stack</h2>
+                    <SkillTags skills={cv.skills} />
+                </section>
+            )}
         </main>
     );
 }

@@ -2,7 +2,8 @@ import { MetadataRoute } from 'next'
 import { ProjectService } from '@/services/project.service'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const projectsData = await ProjectService.getAllProjects();
+    const projectService = new ProjectService();
+    const projectsData = await projectService.getAllProjects();
     const baseUrl = 'https://www.tudominio.com' // TODO: Actualizar al desplegar
 
     // Rutas estáticas de alto nivel
@@ -19,7 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // Rutas dinámicas para cada proyecto
     const projectRoutes = projectsData.map((project) => ({
-        url: `${baseUrl}/projects/${project.id}`,
+        url: `${baseUrl}/projects/${project.slug}`,
         lastModified: new Date(),
         changeFrequency: 'monthly' as const,
         priority: 0.7,
