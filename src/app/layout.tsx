@@ -32,7 +32,9 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <GoogleAnalytics />
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <I18nProvider locale={locale} dictionary={dictionary}>
           <Header />
