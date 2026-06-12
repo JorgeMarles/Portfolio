@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -10,74 +7,37 @@ datasource db {
   provider = "postgresql"
 }
 
-// ─────────────────────────────────────────────
-//  Project
-//  Entidad principal del portafolio
-// ─────────────────────────────────────────────
 model Project {
-  id          Int      @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   title       String
-  slug        String   @unique
-  name        String                   // Nombre técnico / identificador corto
-  description String                   // Texto en Markdown
+  slug        String        @unique
+  name        String
+  description String        @db.VarChar(300)
   status      ProjectStatus @default(COMPLETED)
-  featured    Boolean  @default(false)
+  featured    Boolean       @default(false)
   githubUrl   String?
   demoUrl     String?
   imageUrl    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  tags        String[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
-  // Relaciones
-  tags        ProjectTag[]
-  resources   Resource[]
+  resources Resource[]
 
   @@index([slug])
   @@index([status])
   @@index([featured])
 }
 
-// ─────────────────────────────────────────────
-//  Tag (estandarizado)
-//  Tags globales reutilizables entre proyectos
-// ─────────────────────────────────────────────
-model Tag {
-  id       Int          @id @default(autoincrement())
-  name     String       @unique   // ej. "Node.js", "PostgreSQL"
-  slug     String       @unique   // ej. "nodejs", "postgresql"
-  category TagCategory  @default(OTHER)
-
-  // Relaciones
-  projects ProjectTag[]
-
-  @@index([category])
-}
-
-// Tabla intermedia Project ↔ Tag
-model ProjectTag {
-  projectId Int
-  tagId     Int
-
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@id([projectId, tagId])
-}
-
-// ─────────────────────────────────────────────
-//  Resource
-//  Contenido útil asociado a un proyecto:
-//  puede ser un enlace externo o un documento
-// ─────────────────────────────────────────────
 model Resource {
   id          Int          @id @default(autoincrement())
   projectId   Int
   type        ResourceType
   title       String
-  description String?      // Descripción breve del recurso
-  url         String?      // Para enlaces externos
-  content     String?      // Para documentos en Markdown embebido
-  order       Int          @default(0)  // Para ordenar los recursos en la UI
+  description String?
+  url         String?
+  content     String?
+  order       Int          @default(0)
   createdAt   DateTime     @default(now())
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
@@ -86,43 +46,15 @@ model Resource {
   @@index([type])
 }
 
-// ─────────────────────────────────────────────
-//  Enums
-// ─────────────────────────────────────────────
-
 enum ProjectStatus {
   IN_PROGRESS
   COMPLETED
   ARCHIVED
 }
 
-enum TagCategory {
-  LANGUAGE      // TypeScript, Go, Python…
-  FRAMEWORK     // NestJS, Next.js, Express…
-  DATABASE      // PostgreSQL, MongoDB, Redis…
-  INFRASTRUCTURE // Docker, Kubernetes, AWS…
-  TOOL          // Kafka, Prisma, Swagger…
-  OTHER
-}
-
 enum ResourceType {
-  LINK          // Enlace externo (documentación, artículo, repo)
-  DOCUMENT      // Documento Markdown embebido en la BD
-  VIDEO         // Enlace a video (YouTube, Loom…)
-  REPOSITORY    // Enlace a repositorio de código
-}
-
-// ─────────────────────────────────────────────
-//  CV Version
-//  Multiple CV versions with YAML content
-// ─────────────────────────────────────────────
-model CvVersion {
-  id        Int      @id @default(autoincrement())
-  name      String
-  content   String   @db.Text
-  isPublic  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([isPublic])
+  LINK
+  DOCUMENT
+  VIDEO
+  REPOSITORY
 }

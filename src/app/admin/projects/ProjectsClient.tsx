@@ -9,7 +9,7 @@ interface Project {
   title: string;
   featured: boolean;
   status: string;
-  tags: Array<{ tag: { id: number; name: string } }>;
+  tags: string[];
 }
 
 export function ProjectsClient({ initialProjects }: { initialProjects: Project[] }) {
@@ -19,10 +19,7 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
         <h1>Projects</h1>
-        <button
-          onClick={() => router.push("/admin/projects/new")}
-          className="btn"
-        >
+        <button onClick={() => router.push("/admin/projects/new")} className="btn">
           + New Project
         </button>
       </div>
@@ -42,25 +39,19 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
             <div style={{ flex: 1 }}>
               <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "0.5rem" }}>
                 <h3>{project.title}</h3>
-                {project.featured && (
-                  <span style={{ fontSize: "1.25rem" }}>⭐</span>
-                )}
-                <span
-                  style={{
-                    padding: "0.25rem 0.5rem",
-                    borderRadius: "4px",
-                    fontSize: "0.75rem",
-                    background: "rgba(255, 255, 255, 0.1)",
-                  }}
-                >
+                {project.featured && <span style={{ fontSize: "1.25rem" }}>⭐</span>}
+                <span style={{
+                  padding: "0.25rem 0.5rem",
+                  borderRadius: "4px",
+                  fontSize: "0.75rem",
+                  background: "rgba(255, 255, 255, 0.1)",
+                }}>
                   {project.status}
                 </span>
               </div>
               <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                {project.tags.slice(0, 5).map((pt) => (
-                  <span key={pt.tag.id} className="tag">
-                    {pt.tag.name}
-                  </span>
+                {project.tags.slice(0, 5).map((tag) => (
+                  <span key={tag} className="tag">{tag}</span>
                 ))}
                 {project.tags.length > 5 && (
                   <span className="tag">+{project.tags.length - 5}</span>
@@ -76,10 +67,7 @@ export function ProjectsClient({ initialProjects }: { initialProjects: Project[]
                 Edit
               </button>
               <form action={toggleFeatured.bind(null, project.id)}>
-                <button
-                  type="submit"
-                  className="admin-btn admin-btn-secondary"
-                >
+                <button type="submit" className="admin-btn admin-btn-secondary">
                   {project.featured ? "Unfeature" : "Feature"}
                 </button>
               </form>

@@ -14,6 +14,9 @@ export async function createProject(prevState: any, formData: FormData) {
   }
 
   try {
+    const tags: string[] = JSON.parse(formData.get("tags") as string || "[]");
+    const resources = JSON.parse(formData.get("resources") as string || "[]");
+
     const data = {
       title: formData.get("title") as string,
       slug: formData.get("slug") as string,
@@ -21,15 +24,13 @@ export async function createProject(prevState: any, formData: FormData) {
       description: formData.get("description") as string,
       status: formData.get("status") as any,
       featured: formData.get("featured") === "true",
-      githubUrl: formData.get("githubUrl") as string || undefined,
-      demoUrl: formData.get("demoUrl") as string || undefined,
-      imageUrl: formData.get("imageUrl") as string || undefined,
+      githubUrl: (formData.get("githubUrl") as string) || undefined,
+      demoUrl: (formData.get("demoUrl") as string) || undefined,
+      imageUrl: (formData.get("imageUrl") as string) || undefined,
+      tags,
     };
 
-    const tagIds = JSON.parse(formData.get("tagIds") as string);
-    const resources = JSON.parse(formData.get("resources") as string);
-
-    await projectRepo.create(data, tagIds, resources);
+    await projectRepo.create(data, resources);
     revalidatePath("/projects");
     revalidatePath("/admin/projects");
   } catch (error: any) {
@@ -46,6 +47,9 @@ export async function updateProject(id: number, prevState: any, formData: FormDa
   }
 
   try {
+    const tags: string[] = JSON.parse(formData.get("tags") as string || "[]");
+    const resources = JSON.parse(formData.get("resources") as string || "[]");
+
     const data = {
       title: formData.get("title") as string,
       slug: formData.get("slug") as string,
@@ -53,15 +57,13 @@ export async function updateProject(id: number, prevState: any, formData: FormDa
       description: formData.get("description") as string,
       status: formData.get("status") as any,
       featured: formData.get("featured") === "true",
-      githubUrl: formData.get("githubUrl") as string || undefined,
-      demoUrl: formData.get("demoUrl") as string || undefined,
-      imageUrl: formData.get("imageUrl") as string || undefined,
+      githubUrl: (formData.get("githubUrl") as string) || undefined,
+      demoUrl: (formData.get("demoUrl") as string) || undefined,
+      imageUrl: (formData.get("imageUrl") as string) || undefined,
+      tags,
     };
 
-    const tagIds = JSON.parse(formData.get("tagIds") as string);
-    const resources = JSON.parse(formData.get("resources") as string);
-
-    await projectRepo.update(id, data, tagIds, resources);
+    await projectRepo.update(id, data, resources);
     revalidatePath("/projects");
     revalidatePath(`/projects/${data.slug}`);
     revalidatePath("/admin/projects");
@@ -78,7 +80,7 @@ export async function deleteProject(id: number | string) {
     throw new Error("Unauthorized");
   }
 
-  const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
+  const numericId = typeof id === "string" ? parseInt(id, 10) : id;
   await projectRepo.delete(numericId);
   revalidatePath("/projects");
   revalidatePath("/admin/projects");
@@ -90,7 +92,7 @@ export async function toggleFeatured(id: number | string) {
     throw new Error("Unauthorized");
   }
 
-  const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
+  const numericId = typeof id === "string" ? parseInt(id, 10) : id;
   const project = await projectRepo.findById(numericId);
   if (!project) {
     throw new Error("Project not found");
@@ -108,8 +110,8 @@ export async function toggleFeatured(id: number | string) {
       githubUrl: project.githubUrl || undefined,
       demoUrl: project.demoUrl || undefined,
       imageUrl: project.imageUrl || undefined,
+      tags: project.tags,
     },
-    project.tags.map((pt) => pt.tagId),
     project.resources.map((r) => ({
       type: r.type,
       title: r.title,

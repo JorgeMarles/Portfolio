@@ -1,6 +1,8 @@
 import Image from "next/image";
-import ProjectCard from "./components/project";
+import FeaturedSlider from "./components/FeaturedSlider";
 import { ProjectService } from "@/services/project.service";
+
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const projectService = new ProjectService();
@@ -72,17 +74,7 @@ export default async function Home() {
             Selected Work
           </h2>
 
-          <div
-            className="grid"
-            style={{
-              gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 340px), 1fr))",
-              gap: "1.5rem"
-            }}
-          >
-            {projects.map((project) => (
-              <ProjectCard key={project.id} {...project} />
-            ))}
-          </div>
+          <FeaturedSlider projects={projects} />
         </section>
       </main>
 

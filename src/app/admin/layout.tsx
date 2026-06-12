@@ -60,34 +60,6 @@ export default async function AdminLayout({
                 Projects
               </Link>
             </li>
-            <li style={{ marginBottom: "0.5rem" }}>
-              <Link
-                href="/admin/cv"
-                style={{
-                  display: "block",
-                  padding: "0.75rem 1rem",
-                  borderRadius: "8px",
-                  transition: "background 0.2s",
-                }}
-                className="nav-link"
-              >
-                CV
-              </Link>
-            </li>
-            <li style={{ marginBottom: "0.5rem" }}>
-              <Link
-                href="/admin/tags"
-                style={{
-                  display: "block",
-                  padding: "0.75rem 1rem",
-                  borderRadius: "8px",
-                  transition: "background 0.2s",
-                }}
-                className="nav-link"
-              >
-                Tags
-              </Link>
-            </li>
           </ul>
         </nav>
 

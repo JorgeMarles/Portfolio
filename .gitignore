@@ -23,6 +23,10 @@
 # misc
 .DS_Store
 *.pem
+server.log
+cookies.txt
+skills-lock.json
+.ruff_cache/
 
 # debug
 npm-debug.log*

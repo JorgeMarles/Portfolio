@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next'
 import { ProjectService } from '@/services/project.service'
 
+export const dynamic = 'force-dynamic';
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const projectService = new ProjectService();
     const projectsData = await projectService.getAllProjects();

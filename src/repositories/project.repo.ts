@@ -1,101 +1,41 @@
 import { prisma } from "@/lib/prisma";
-import { Project, ProjectTag, Tag, Resource } from "@/generated/prisma";
+import { Project, Resource } from "@/generated/prisma";
 
 export type ProjectWithRelations = Project & {
-  tags: (ProjectTag & { tag: Tag })[];
   resources: Resource[];
 };
 
 export class ProjectRepository {
-  /**
-   * Obtener todos los proyectos con sus tags y recursos
-   */
   async findAll(): Promise<ProjectWithRelations[]> {
     return prisma.project.findMany({
-      include: {
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-        resources: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
+      include: { resources: true },
+      orderBy: { createdAt: "desc" },
     });
   }
 
-  /**
-   * Obtener proyectos destacados
-   */
   async findFeatured(): Promise<ProjectWithRelations[]> {
     return prisma.project.findMany({
-      where: {
-        featured: true,
-      },
-      include: {
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-        resources: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
+      where: { featured: true },
+      include: { resources: true },
+      orderBy: { createdAt: "desc" },
     });
   }
 
-  /**
-   * Buscar un proyecto por su slug
-   */
   async findBySlug(slug: string): Promise<ProjectWithRelations | null> {
     return prisma.project.findUnique({
       where: { slug },
-      include: {
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-        resources: true,
-      },
+      include: { resources: true },
     });
   }
 
-  /**
-   * Find projects by tag slug
-   */
-  async findByTagSlug(slug: string): Promise<ProjectWithRelations[]> {
+  async findByTag(tag: string): Promise<ProjectWithRelations[]> {
     return prisma.project.findMany({
-      where: {
-        tags: {
-          some: {
-            tag: {
-              slug,
-            },
-          },
-        },
-      },
-      include: {
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-        resources: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
+      where: { tags: { has: tag } },
+      include: { resources: true },
+      orderBy: { createdAt: "desc" },
     });
   }
 
-  /**
-   * Create a new project with tags and resources
-   */
   async create(
     data: {
       title: string;
@@ -107,8 +47,8 @@ export class ProjectRepository {
       githubUrl?: string;
       demoUrl?: string;
       imageUrl?: string;
+      tags: string[];
     },
-    tagIds: number[],
     resources: Array<{
       type: string;
       title: string;
@@ -118,7 +58,6 @@ export class ProjectRepository {
       order: number;
     }>
   ): Promise<ProjectWithRelations> {
-    // @ts-ignore
     return prisma.project.create({
       data: {
         title: data.title,
@@ -130,11 +69,9 @@ export class ProjectRepository {
         githubUrl: data.githubUrl,
         demoUrl: data.demoUrl,
         imageUrl: data.imageUrl,
-        tags: {
-          create: tagIds.map((tagId) => ({ tagId })),
-        },
+        tags: data.tags,
         resources: {
-          create: resources.map(r => ({
+          create: resources.map((r) => ({
             type: r.type as any,
             title: r.title,
             description: r.description,
@@ -144,16 +81,10 @@ export class ProjectRepository {
           })),
         },
       },
-      include: {
-        tags: { include: { tag: true } },
-        resources: true,
-      },
+      include: { resources: true },
     });
   }
 
-  /**
-   * Update a project with tags and resources
-   */
   async update(
     id: number,
     data: {
@@ -166,8 +97,8 @@ export class ProjectRepository {
       githubUrl?: string;
       demoUrl?: string;
       imageUrl?: string;
+      tags: string[];
     },
-    tagIds: number[],
     resources: Array<{
       type: string;
       title: string;
@@ -178,16 +109,8 @@ export class ProjectRepository {
     }>
   ): Promise<ProjectWithRelations> {
     return prisma.$transaction(async (tx) => {
-      // Delete existing tags and resources
-      await tx.projectTag.deleteMany({
-        where: { projectId: id },
-      });
-      await tx.resource.deleteMany({
-        where: { projectId: id },
-      });
+      await tx.resource.deleteMany({ where: { projectId: id } });
 
-      // Update project with new tags and resources
-      // @ts-ignore
       return tx.project.update({
         where: { id },
         data: {
@@ -200,11 +123,9 @@ export class ProjectRepository {
           githubUrl: data.githubUrl,
           demoUrl: data.demoUrl,
           imageUrl: data.imageUrl,
-          tags: {
-            create: tagIds.map((tagId) => ({ tagId })),
-          },
+          tags: data.tags,
           resources: {
-            create: resources.map(r => ({
+            create: resources.map((r) => ({
               type: r.type as any,
               title: r.title,
               description: r.description,
@@ -214,37 +135,30 @@ export class ProjectRepository {
             })),
           },
         },
-        include: {
-          tags: { include: { tag: true } },
-          resources: true,
-        },
+        include: { resources: true },
       });
     });
   }
 
-  /**
-   * Delete a project
-   */
   async delete(id: number): Promise<void> {
-    await prisma.project.delete({
-      where: { id },
-    });
+    await prisma.project.delete({ where: { id } });
   }
 
-  /**
-   * Find a project by ID
-   */
   async findById(id: number): Promise<ProjectWithRelations | null> {
     return prisma.project.findUnique({
       where: { id },
-      include: {
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-        resources: true,
-      },
+      include: { resources: true },
     });
+  }
+
+  async getAllTags(): Promise<string[]> {
+    const projects = await prisma.project.findMany({
+      select: { tags: true },
+    });
+    const tagSet = new Set<string>();
+    for (const p of projects) {
+      for (const t of p.tags) tagSet.add(t);
+    }
+    return Array.from(tagSet).sort();
   }
 }

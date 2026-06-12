@@ -1,16 +1,17 @@
 import { z } from "zod";
-import { ProjectStatus, TagCategory, ResourceType } from "@/generated/prisma";
+import { ProjectStatus, ResourceType } from "@/generated/prisma";
 
 export const projectSchema = z.object({
-  title: z.string().min(5, "El título debe tener al menos 5 caracteres"),
-  slug: z.string().min(3).regex(/^[a-z0-9-]+$/, "Slug inválido"),
+  title: z.string().min(5, "Title must be at least 5 characters"),
+  slug: z.string().min(3).regex(/^[a-z0-9-]+$/, "Invalid slug"),
   name: z.string().min(2),
-  description: z.string().min(10, "La descripción en markdown es obligatoria"),
+  description: z.string().min(10).max(300, "Description must be 300 characters or less"),
   status: z.nativeEnum(ProjectStatus).default(ProjectStatus.COMPLETED),
   featured: z.boolean().default(false),
   githubUrl: z.string().url().nullable().optional(),
   demoUrl: z.string().url().nullable().optional(),
   imageUrl: z.string().url().nullable().optional(),
+  tags: z.array(z.string()).default([]),
 });
 
 export const resourceSchema = z.object({

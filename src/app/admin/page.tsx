@@ -1,28 +1,24 @@
 import { ProjectService } from "@/services/project.service";
-import { TagService } from "@/services/tag.service";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 
 export default async function AdminDashboard() {
   const session = await getSession();
-
   if (!session.isLoggedIn) {
     redirect("/admin/login");
   }
-  const projectService = new ProjectService();
-  const tagService = new TagService();
 
+  const projectService = new ProjectService();
   const [allProjects, featuredProjects, allTags] = await Promise.all([
     projectService.getAllProjects(),
     projectService.getFeaturedProjects(),
-    tagService.getAllTags(),
+    projectService.getAllTags(),
   ]);
 
   const stats = [
     { label: "Total Projects", value: allProjects.length },
     { label: "Featured Projects", value: featuredProjects.length },
     { label: "Total Tags", value: allTags.length },
-    { label: "CV Versions", value: 0 }, // Will be implemented in Phase 4
   ];
 
   return (
@@ -43,19 +39,14 @@ export default async function AdminDashboard() {
           <div
             key={stat.label}
             className="card"
-            style={{
-              padding: "1.5rem",
-              textAlign: "center",
-            }}
+            style={{ padding: "1.5rem", textAlign: "center" }}
           >
-            <div
-              style={{
-                fontSize: "2.5rem",
-                fontWeight: 700,
-                color: "var(--accent-primary)",
-                marginBottom: "0.5rem",
-              }}
-            >
+            <div style={{
+              fontSize: "2.5rem",
+              fontWeight: 700,
+              color: "var(--accent)",
+              marginBottom: "0.5rem",
+            }}>
               {stat.value}
             </div>
             <div style={{ fontSize: "0.875rem", color: "#a1a1aa" }}>
@@ -66,9 +57,7 @@ export default async function AdminDashboard() {
       </div>
 
       <div style={{ marginTop: "3rem" }}>
-        <h2 style={{ fontSize: "1.25rem", marginBottom: "1rem" }}>
-          Recent Projects
-        </h2>
+        <h2 style={{ fontSize: "1.25rem", marginBottom: "1rem" }}>Recent Projects</h2>
         <div style={{ display: "grid", gap: "1rem" }}>
           {allProjects.slice(0, 5).map((project) => (
             <div
@@ -83,15 +72,11 @@ export default async function AdminDashboard() {
             >
               <div>
                 <h3 style={{ marginBottom: "0.25rem" }}>{project.title}</h3>
-                <p style={{ fontSize: "0.875rem", color: "#a1a1aa" }}>
-                  {project.status}
-                </p>
+                <p style={{ fontSize: "0.875rem", color: "#a1a1aa" }}>{project.status}</p>
               </div>
               <div style={{ display: "flex", gap: "0.5rem" }}>
-                {project.tags.slice(0, 3).map((pt) => (
-                  <span key={pt.tag.id} className="tag">
-                    {pt.tag.name}
-                  </span>
+                {project.tags.slice(0, 3).map((tag) => (
+                  <span key={tag} className="tag">{tag}</span>
                 ))}
               </div>
             </div>

@@ -2,22 +2,17 @@
 
 import { useActionState } from "react";
 import { useState, useEffect } from "react";
-import { Tag, ProjectStatus, TagCategory } from "@/generated/prisma";
-import { MarkdownEditor } from "./MarkdownEditor";
-import { TagSelector } from "./TagSelector";
+import { ProjectStatus } from "@/generated/prisma";
 import { ResourceManager } from "./ResourceManager";
 import { ProjectWithRelations } from "@/repositories/project.repo";
-import { createTagDirect } from "../actions/tag.actions";
 
 interface ProjectFormProps {
   project?: ProjectWithRelations;
-  availableTags: Tag[];
   action: (prevState: any, formData: FormData) => Promise<any>;
 }
 
-export function ProjectForm({ project, availableTags: initialTags, action }: ProjectFormProps) {
+export function ProjectForm({ project, action }: ProjectFormProps) {
   const [state, formAction, pending] = useActionState(action, null);
-  const [availableTags, setAvailableTags] = useState(initialTags);
 
   const [title, setTitle] = useState(project?.title || "");
   const [slug, setSlug] = useState(project?.slug || "");
@@ -28,9 +23,7 @@ export function ProjectForm({ project, availableTags: initialTags, action }: Pro
   const [githubUrl, setGithubUrl] = useState(project?.githubUrl || "");
   const [demoUrl, setDemoUrl] = useState(project?.demoUrl || "");
   const [imageUrl, setImageUrl] = useState(project?.imageUrl || "");
-  const [selectedTagIds, setSelectedTagIds] = useState<number[]>(
-    project?.tags.map((pt) => pt.tagId) || []
-  );
+  const [tagsInput, setTagsInput] = useState(project?.tags.join(", ") || "");
   const [resources, setResources] = useState(
     project?.resources.map((r) => ({
       type: r.type,
@@ -41,12 +34,6 @@ export function ProjectForm({ project, availableTags: initialTags, action }: Pro
       order: r.order,
     })) || []
   );
-
-  const handleCreateTag = async (name: string, category: TagCategory) => {
-    const newTag = await createTagDirect(name, category);
-    setAvailableTags([...availableTags, newTag]);
-    return newTag;
-  };
 
   useEffect(() => {
     if (!slug && title) {
@@ -59,7 +46,11 @@ export function ProjectForm({ project, availableTags: initialTags, action }: Pro
   }, [title, slug]);
 
   const handleSubmit = (formData: FormData) => {
-    formData.set("tagIds", JSON.stringify(selectedTagIds));
+    const tags = tagsInput
+      .split(",")
+      .map((t) => t.trim())
+      .filter(Boolean);
+    formData.set("tags", JSON.stringify(tags));
     formData.set("resources", JSON.stringify(resources));
     return formAction(formData);
   };
@@ -69,9 +60,7 @@ export function ProjectForm({ project, availableTags: initialTags, action }: Pro
       <div style={{ display: "grid", gap: "2rem" }}>
         <div className="admin-field-grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
           <div>
-            <label className="admin-label">
-              Project Title
-            </label>
+            <label className="admin-label">Project Title</label>
             <input
               name="title"
               type="text"
@@ -79,14 +68,11 @@ export function ProjectForm({ project, availableTags: initialTags, action }: Pro
               onChange={(e) => setTitle(e.target.value)}
               required
               className="admin-input"
-              placeholder=">>> ENTER PROJECT DESIGNATION"
+              placeholder="Project title"
             />
           </div>
-
           <div>
-            <label className="admin-label">
-              URL Slug
-            </label>
+            <label className="admin-label">URL Slug</label>
             <input
               name="slug"
               type="text"
@@ -100,9 +86,7 @@ export function ProjectForm({ project, availableTags: initialTags, action }: Pro
         </div>
 
         <div>
-          <label className="admin-label">
-            Display Name
-          </label>
+          <label className="admin-label">Display Name</label>
           <input
             name="name"
             type="text"
@@ -110,27 +94,42 @@ export function ProjectForm({ project, availableTags: initialTags, action }: Pro
             onChange={(e) => setName(e.target.value)}
             required
             className="admin-input"
-            placeholder=">>> PUBLIC FACING NAME"
+            placeholder="Public facing name"
           />
+        </div>
+
+        <div>
+          <label className="admin-label">Description</label>
+          <textarea
+            name="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            maxLength={300}
+            className="admin-input"
+            placeholder="Brief project description (max 300 chars)"
+            rows={3}
+            style={{ resize: "vertical" }}
+          />
+          <span style={{ fontSize: "0.75rem", color: "#666", marginTop: "0.25rem", display: "block" }}>
+            {description.length}/300
+          </span>
         </div>
 
         <div className="admin-field-grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
           <div>
-            <label className="admin-label">
-              Operational Status
-            </label>
+            <label className="admin-label">Status</label>
             <select
               name="status"
               value={status}
               onChange={(e) => setStatus(e.target.value as ProjectStatus)}
               className="admin-input admin-select"
             >
-              <option value="IN_PROGRESS">/// IN PROGRESS</option>
-              <option value="COMPLETED">/// COMPLETED</option>
-              <option value="ARCHIVED">/// ARCHIVED</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="ARCHIVED">Archived</option>
             </select>
           </div>
-
           <div style={{ display: "flex", alignItems: "center", height: "100%" }}>
             <label style={{ display: "flex", alignItems: "center", gap: "0.75rem", cursor: "pointer" }}>
               <input
@@ -141,18 +140,14 @@ export function ProjectForm({ project, availableTags: initialTags, action }: Pro
                 value="true"
                 className="admin-checkbox"
               />
-              <span className="admin-label" style={{ marginBottom: 0 }}>
-                Featured Unit
-              </span>
+              <span className="admin-label" style={{ marginBottom: 0 }}>Featured</span>
             </label>
           </div>
         </div>
 
         <div className="admin-field-grid" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
           <div>
-            <label className="admin-label">
-              Repository URI
-            </label>
+            <label className="admin-label">GitHub URL</label>
             <input
               name="githubUrl"
               type="url"
@@ -162,11 +157,8 @@ export function ProjectForm({ project, availableTags: initialTags, action }: Pro
               placeholder="https://github.com/..."
             />
           </div>
-
           <div>
-            <label className="admin-label">
-              Live Demo URI
-            </label>
+            <label className="admin-label">Demo URL</label>
             <input
               name="demoUrl"
               type="url"
@@ -176,11 +168,8 @@ export function ProjectForm({ project, availableTags: initialTags, action }: Pro
               placeholder="https://demo.example.com"
             />
           </div>
-
           <div>
-            <label className="admin-label">
-              Asset URI
-            </label>
+            <label className="admin-label">Image URL</label>
             <input
               name="imageUrl"
               type="url"
@@ -193,35 +182,34 @@ export function ProjectForm({ project, availableTags: initialTags, action }: Pro
         </div>
 
         <div>
-          <label className="admin-label" style={{ marginBottom: "1rem" }}>
-            Technical Documentation
-          </label>
-          <input type="hidden" name="description" value={description} />
-          <MarkdownEditor value={description} onChange={setDescription} />
-        </div>
-
-        <div>
-          <label className="admin-label" style={{ marginBottom: "1rem" }}>
-            Classification Tags
-          </label>
-          <TagSelector
-            availableTags={availableTags}
-            selectedTagIds={selectedTagIds}
-            onChange={setSelectedTagIds}
-            onCreateTag={handleCreateTag}
+          <label className="admin-label">Tags</label>
+          <input
+            type="text"
+            value={tagsInput}
+            onChange={(e) => setTagsInput(e.target.value)}
+            className="admin-input"
+            placeholder="TypeScript, Go, Docker (comma separated)"
           />
+          <span style={{ fontSize: "0.75rem", color: "#666", marginTop: "0.25rem", display: "block" }}>
+            Separate tags with commas
+          </span>
         </div>
 
         <div>
-          <label className="admin-label" style={{ marginBottom: "1rem" }}>
-            Attached Resources
-          </label>
-          <ResourceManager resources={resources} onChange={(r) => setResources(r.map(res => ({
-            ...res,
-            description: res.description || "",
-            url: res.url || "",
-            content: res.content || ""
-          })))} />
+          <label className="admin-label" style={{ marginBottom: "1rem" }}>Resources</label>
+          <ResourceManager
+            resources={resources}
+            onChange={(r) =>
+              setResources(
+                r.map((res) => ({
+                  ...res,
+                  description: res.description || "",
+                  url: res.url || "",
+                  content: res.content || "",
+                }))
+              )
+            }
+          />
         </div>
 
         {state?.error && (

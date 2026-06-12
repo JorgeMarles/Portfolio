@@ -10,18 +10,5 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgresql://postgres:1234@db:5432/portfolio?schema=public
-      ADMIN_EMAIL: admin@example.com
-      ADMIN_PASSWORD_HASH: $2b$10$LDwthHVmdVWZmdLCgIYWX.zla1NwjZFMzn/zmrcslfBpY0jRichby
-      SESSION_SECRET: dfd4b2cd27fe63e2b36b63e1240b50dbba74067d8ef15d272d6689802a0a4d47
-      NEXT_PUBLIC_BASE_URL: http://localhost:3000
-
 volumes:
   pgdata:
