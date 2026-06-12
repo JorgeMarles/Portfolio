@@ -16,6 +16,7 @@ export function ProjectForm({ project, action }: ProjectFormProps) {
 
   const [title, setTitle] = useState(project?.title || "");
   const [slug, setSlug] = useState(project?.slug || "");
+  const [slugManuallyEdited, setSlugManuallyEdited] = useState(!!project?.slug);
   const [name, setName] = useState(project?.name || "");
   const [description, setDescription] = useState(project?.description || "");
   const [status, setStatus] = useState<ProjectStatus>(project?.status || "COMPLETED");
@@ -36,14 +37,14 @@ export function ProjectForm({ project, action }: ProjectFormProps) {
   );
 
   useEffect(() => {
-    if (!slug && title) {
+    if (!slugManuallyEdited && title) {
       const autoSlug = title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-|-$/g, "");
       setSlug(autoSlug);
     }
-  }, [title, slug]);
+  }, [title, slugManuallyEdited]);
 
   const handleSubmit = (formData: FormData) => {
     const tags = tagsInput
@@ -77,7 +78,7 @@ export function ProjectForm({ project, action }: ProjectFormProps) {
               name="slug"
               type="text"
               value={slug}
-              onChange={(e) => setSlug(e.target.value)}
+              onChange={(e) => { setSlug(e.target.value); setSlugManuallyEdited(true); }}
               required
               className="admin-input"
               placeholder="auto-generated-slug"

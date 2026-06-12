@@ -4,12 +4,14 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { ProjectWithRelations } from "@/repositories/project.repo";
+import { useI18n } from "@/i18n/client";
 
 type FeaturedSliderProps = {
   projects: ProjectWithRelations[];
 };
 
 export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
+  const { t } = useI18n();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -29,14 +31,12 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
   const goNext = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
 
-  // Auto-advance every 6 seconds, paused on hover
   useEffect(() => {
     if (isHovered || total <= 1) return;
     const id = setInterval(goNext, 6000);
     return () => clearInterval(id);
   }, [isHovered, goNext, total]);
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!containerRef.current?.contains(document.activeElement)) return;
@@ -61,7 +61,7 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
       onMouseLeave={() => setIsHovered(false)}
       tabIndex={0}
       role="region"
-      aria-label="Featured projects carousel"
+      aria-label={t.slider.ariaLabel}
       aria-roledescription="carousel"
       style={{
         position: "relative",
@@ -69,7 +69,6 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
         outline: "none",
       }}
     >
-      {/* Slide viewport */}
       <div
         style={{
           position: "relative",
@@ -78,7 +77,6 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
           background: "var(--card-bg)",
         }}
       >
-        {/* Track */}
         <div
           style={{
             display: "flex",
@@ -100,7 +98,6 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
                 minHeight: "520px",
               }}
             >
-              {/* Image panel */}
               {proj.imageUrl && (
                 <div
                   style={{
@@ -122,7 +119,6 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
                     sizes="(max-width: 768px) 100vw, 50vw"
                     priority={i === 0}
                   />
-                  {/* Gradient overlay on image */}
                   <div
                     style={{
                       position: "absolute",
@@ -135,7 +131,6 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
                 </div>
               )}
 
-              {/* Content panel */}
               <div
                 style={{
                   padding: "3rem 2.5rem",
@@ -146,7 +141,6 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
                   gridColumn: proj.imageUrl ? undefined : "1 / -1",
                 }}
               >
-                {/* Project number indicator */}
                 <span
                   style={{
                     fontFamily: "var(--mono)",
@@ -156,10 +150,9 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
                     textTransform: "uppercase",
                   }}
                 >
-                  PROJECT {String(i + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+                  {t.slider.project} {String(i + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
                 </span>
 
-                {/* Title */}
                 <h3
                   style={{
                     fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
@@ -173,7 +166,6 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
                   {proj.title}
                 </h3>
 
-                {/* Description */}
                 <p
                   style={{
                     color: "#aaa",
@@ -186,7 +178,6 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
                   {proj.description}
                 </p>
 
-                {/* Tags */}
                 <div
                   style={{
                     display: "flex",
@@ -202,7 +193,6 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
                   ))}
                 </div>
 
-                {/* Actions */}
                 <div
                   style={{
                     display: "flex",
@@ -220,7 +210,7 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
                       className="btn"
                       style={{ fontSize: "0.6875rem" }}
                     >
-                      Live Demo
+                      {t.slider.liveDemo}
                     </a>
                   )}
                   {proj.githubUrl && (
@@ -231,7 +221,7 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
                       className="btn btn-outline"
                       style={{ fontSize: "0.6875rem" }}
                     >
-                      View Code
+                      {t.slider.viewCode}
                     </a>
                   )}
                   <Link
@@ -247,7 +237,7 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
                       transition: "opacity 150ms ease",
                     }}
                   >
-                    {">>>"} Read More
+                    {t.slider.readMore}
                   </Link>
                 </div>
               </div>
@@ -256,12 +246,11 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
         </div>
       </div>
 
-      {/* Navigation arrows */}
       {total > 1 && (
         <>
           <button
             onClick={goPrev}
-            aria-label="Previous project"
+            aria-label={t.slider.prevProject}
             style={{
               position: "absolute",
               top: "50%",
@@ -294,7 +283,7 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
           </button>
           <button
             onClick={goNext}
-            aria-label="Next project"
+            aria-label={t.slider.nextProject}
             style={{
               position: "absolute",
               top: "50%",
@@ -328,7 +317,6 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
         </>
       )}
 
-      {/* Dot indicators + progress bar */}
       {total > 1 && (
         <div
           style={{
@@ -343,7 +331,7 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
             <button
               key={i}
               onClick={() => goTo(i)}
-              aria-label={`Go to slide ${i + 1}`}
+              aria-label={`${t.slider.goToSlide} ${i + 1}`}
               aria-current={i === activeIndex ? "true" : undefined}
               style={{
                 width: i === activeIndex ? "2rem" : "0.5rem",
@@ -360,7 +348,6 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
         </div>
       )}
 
-      {/* Responsive styles via inline media query workaround */}
       <style>{`
         @media (max-width: 768px) {
           [aria-roledescription="slide"] {
@@ -372,12 +359,12 @@ export default function FeaturedSlider({ projects }: FeaturedSliderProps) {
             border-right: none !important;
             border-bottom: 1px solid var(--card-border);
           }
-          [aria-label="Previous project"] {
+          [aria-label="${t.slider.prevProject}"] {
             left: 0.5rem !important;
             width: 2.5rem !important;
             height: 2.5rem !important;
           }
-          [aria-label="Next project"] {
+          [aria-label="${t.slider.nextProject}"] {
             right: 0.5rem !important;
             width: 2.5rem !important;
             height: 2.5rem !important;

@@ -73,7 +73,7 @@
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   letter-spacing: 0.02em;
-  text-transform: uppercase;
+  text-transform: none;
   transition: none;
   min-height: 48px;
   box-shadow: inset 0 0 0 1px rgba(234, 234, 234, 0.05);
@@ -92,7 +92,7 @@
 
 .admin-input::placeholder {
   color: #4A4A4A;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.05em;
   font-family: var(--font-mono);
 }

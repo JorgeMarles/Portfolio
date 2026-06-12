@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { getLocale, getDictionary } from "@/i18n";
 
 interface ProjectDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -29,15 +30,24 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
   const { slug } = await params;
   const projectService = new ProjectService();
   const project = await projectService.getProjectBySlug(slug);
+  const locale = await getLocale();
+  const t = getDictionary(locale);
 
   if (!project) {
     notFound();
   }
 
   const statusLabels = {
-    IN_PROGRESS: "In Progress",
-    COMPLETED: "Completed",
-    ARCHIVED: "Archived",
+    IN_PROGRESS: t.projectDetail.statusInProgress,
+    COMPLETED: t.projectDetail.statusCompleted,
+    ARCHIVED: t.projectDetail.statusArchived,
+  };
+
+  const resourceLabels = {
+    REPOSITORY: t.projectDetail.viewRepo,
+    LINK: t.projectDetail.visitLink,
+    VIDEO: t.projectDetail.watchVideo,
+    DOCUMENT: t.projectDetail.viewDocument,
   };
 
   return (
@@ -89,7 +99,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
       {project.resources.length > 0 && (
         <div style={{ marginBottom: "3rem" }}>
-          <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem", textTransform: "uppercase" }}>Resources</h2>
+          <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem", textTransform: "uppercase" }}>{t.projectDetail.resources}</h2>
           <div style={{ display: "grid", gap: "1rem" }}>
             {project.resources
               .sort((a, b) => a.order - b.order)
@@ -115,10 +125,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                         fontFamily: "var(--mono)",
                       }}
                     >
-                      {resource.type === "REPOSITORY" && "View Repository →"}
-                      {resource.type === "LINK" && "Visit Link →"}
-                      {resource.type === "VIDEO" && "Watch Video →"}
-                      {resource.type === "DOCUMENT" && "View Document →"}
+                      {resourceLabels[resource.type as keyof typeof resourceLabels]}
                     </a>
                   )}
                 </div>
@@ -130,16 +137,16 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
       <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
         {project.githubUrl && (
           <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="btn">
-            View on GitHub
+            {t.projectDetail.viewOnGithub}
           </a>
         )}
         {project.demoUrl && (
           <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
-            Live Demo
+            {t.projectDetail.liveDemo}
           </a>
         )}
         <Link href="/projects" className="btn btn-outline">
-          ← Back to Projects
+          {t.projectDetail.backToProjects}
         </Link>
       </div>
     </div>

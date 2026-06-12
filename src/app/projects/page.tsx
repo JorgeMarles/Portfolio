@@ -1,6 +1,7 @@
 import ProjectCard from "../components/project";
 import { ProjectService } from "@/services/project.service";
 import Link from "next/link";
+import { getLocale, getDictionary } from "@/i18n";
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,8 @@ interface ProjectsPageProps {
 export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
   const { tag } = await searchParams;
   const projectService = new ProjectService();
+  const locale = await getLocale();
+  const t = getDictionary(locale);
 
   const allTags = await projectService.getAllTags();
   const projects = tag
@@ -38,9 +41,9 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
           marginBottom: "0.5rem",
           letterSpacing: "0.1em"
         }}>
-          [ ALL PROJECTS ]
+          {t.projects.label}
         </span>
-        Project Archive
+        {t.projects.title}
       </h1>
       <p style={{
         color: "#999",
@@ -49,7 +52,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
         fontWeight: 500,
         maxWidth: "65ch"
       }}>
-        Technical solutions ranging from microservices to distributed systems.
+        {t.projects.subtitle}
       </p>
 
       <div style={{ marginBottom: "3.5rem" }}>
@@ -62,7 +65,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
           letterSpacing: "0.1em",
           fontFamily: "var(--mono)"
         }}>
-          // Filter by technology
+          {t.projects.filterBy}
         </h3>
         <div style={{ display: "flex", gap: "0.625rem", flexWrap: "wrap" }}>
           <Link
@@ -75,21 +78,21 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
               color: !tag ? "var(--background)" : "var(--foreground)"
             }}
           >
-            All
+            {t.projects.all}
           </Link>
-          {allTags.map((t) => (
+          {allTags.map((tg) => (
             <Link
-              key={t}
-              href={`/projects?tag=${encodeURIComponent(t)}`}
+              key={tg}
+              href={`/projects?tag=${encodeURIComponent(tg)}`}
               className="tag"
               style={{
                 cursor: "pointer",
-                background: tag === t ? "var(--accent)" : "transparent",
-                borderColor: tag === t ? "var(--accent)" : "var(--card-border)",
-                color: tag === t ? "var(--background)" : "var(--foreground)"
+                background: tag === tg ? "var(--accent)" : "transparent",
+                borderColor: tag === tg ? "var(--accent)" : "var(--card-border)",
+                color: tag === tg ? "var(--background)" : "var(--foreground)"
               }}
             >
-              {t}
+              {tg}
             </Link>
           ))}
         </div>
@@ -111,7 +114,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
             letterSpacing: "0.05em",
             marginBottom: "1rem"
           }}>
-            [ NO PROJECTS FOUND ]
+            {t.projects.noResults}
           </p>
           <Link href="/projects" style={{
             color: "var(--accent)",
@@ -119,7 +122,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
             fontFamily: "var(--mono)",
             fontSize: "0.875rem"
           }}>
-            {'>>>'} View all projects
+            {t.projects.viewAll}
           </Link>
         </div>
       ) : (

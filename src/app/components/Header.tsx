@@ -2,15 +2,20 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useI18n } from '@/i18n/client';
+import type { Locale } from '@/i18n';
 
 export function Header() {
   const pathname = usePathname();
+  const { locale, t, switchLocale } = useI18n();
 
   const links = [
-    { href: '/', label: 'Home' },
-    { href: '/projects', label: 'Projects' },
-    { href: '/about', label: 'About' },
+    { href: '/', label: t.nav.home },
+    { href: '/projects', label: t.nav.projects },
+    { href: '/about', label: t.nav.about },
   ];
+
+  const otherLocale: Locale = locale === 'en' ? 'es' : 'en';
 
   return (
     <header style={{
@@ -40,7 +45,7 @@ export function Header() {
           Jorge Marles
         </Link>
 
-        <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 'clamp(1rem, 3vw, 2.5rem)', alignItems: 'center' }}>
           {links.map(link => (
             <Link
               key={link.href}
@@ -49,7 +54,8 @@ export function Header() {
                 color: pathname === link.href ? 'var(--accent)' : '#999',
                 fontWeight: pathname === link.href ? 700 : 600,
                 transition: 'color 100ms ease',
-                position: 'relative'
+                position: 'relative',
+                whiteSpace: 'nowrap'
               }}
               onMouseEnter={(e) => {
                 if (pathname !== link.href) {
@@ -67,6 +73,34 @@ export function Header() {
               {pathname === link.href && ' ]'}
             </Link>
           ))}
+
+          <button
+            onClick={() => switchLocale(otherLocale)}
+            style={{
+              background: 'transparent',
+              border: '1px solid var(--card-border)',
+              color: 'var(--foreground)',
+              padding: '0.25rem 0.625rem',
+              fontFamily: 'var(--mono)',
+              fontSize: '0.6875rem',
+              fontWeight: 700,
+              letterSpacing: '0.05em',
+              cursor: 'pointer',
+              textTransform: 'uppercase',
+              transition: 'border-color 150ms ease, color 150ms ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'var(--accent)';
+              e.currentTarget.style.color = 'var(--accent)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--card-border)';
+              e.currentTarget.style.color = 'var(--foreground)';
+            }}
+            aria-label={`Switch to ${otherLocale === 'en' ? 'English' : 'Español'}`}
+          >
+            {otherLocale === 'en' ? 'EN' : 'ES'}
+          </button>
         </div>
       </nav>
     </header>

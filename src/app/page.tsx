@@ -1,12 +1,15 @@
 import Image from "next/image";
 import FeaturedSlider from "./components/FeaturedSlider";
 import { ProjectService } from "@/services/project.service";
+import { getLocale, getDictionary } from "@/i18n";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const projectService = new ProjectService();
   const projects = await projectService.getFeaturedProjects();
+  const locale = await getLocale();
+  const t = getDictionary(locale);
 
   return (
     <div className="min-h-screen">
@@ -17,7 +20,7 @@ export default async function Home() {
         <section className="hero">
           <div className="hero-content">
             <h1>
-              Hi, I'm <span className="text-gradient">Jorge Marles</span>
+              {t.home.greeting} <span className="text-gradient">Jorge Marles</span>
             </h1>
             <p style={{
               fontSize: "1.25rem",
@@ -26,10 +29,10 @@ export default async function Home() {
               fontWeight: 500,
               lineHeight: 1.7
             }}>
-              Full stack developer and software engineer in training. Focused on system architecture and cloud computing. Building efficient, maintainable solutions for complex problems.
+              {t.home.description}
             </p>
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
-              <a href="#projects" className="btn">View Projects</a>
+              <a href="#projects" className="btn">{t.home.viewProjects}</a>
               <a
                 href="https://github.com/JorgeMarles"
                 target="_blank"
@@ -69,9 +72,9 @@ export default async function Home() {
               marginBottom: "0.5rem",
               letterSpacing: "0.1em"
             }}>
-              [ FEATURED PROJECTS ]
+              {t.home.featuredLabel}
             </span>
-            Selected Work
+            {t.home.selectedWork}
           </h2>
 
           <FeaturedSlider projects={projects} />
@@ -91,7 +94,7 @@ export default async function Home() {
           letterSpacing: "0.05em",
           color: "#666"
         }}>
-          <p>© {new Date().getFullYear()} JORGE MARLES // BUILT WITH NEXT.JS</p>
+          <p>© {new Date().getFullYear()} {t.home.footer}</p>
         </div>
       </footer>
     </div>
