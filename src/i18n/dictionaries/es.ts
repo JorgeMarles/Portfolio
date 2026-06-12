@@ -65,7 +65,7 @@ export const es: Dictionary = {
     recognition: "Reconocimiento",
     languagesLabel: "Idiomas",
     communication: "Comunicación",
-    fullName: "Jorge Andrés Marles Flórez",
+    fullName: "Jorge Andres Marles Florez",
     profileTitle: "Ingeniero de Sistemas (en formación) | Desarrollador Backend",
     profileLocation: "San José de Cúcuta, Colombia",
     profileSummary:
